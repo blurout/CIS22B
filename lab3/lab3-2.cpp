@@ -188,7 +188,7 @@ void Cargo::output(Cargo *cargoObject) /// need to output six pieces of data
 {
     cout << "Unit load type: " << setw(5) << left << getuldtype() << endl;
     cout << "Abbreviation:   " << setw(5) << left << getabbrev() << endl;
-    cout << "Unit load id:   " << setw(5) << left << getabbrev() << getuldid() << endl;
+    cout << "Unit load id:   " << setw(5) << left << getabbrev() + getuldid() << endl;
     cout << "Aircraft:       " << setw(5) << left << getaircraft() << endl;
     cout << "Weight:         " << setw(4) << left << fixed << setprecision(2) << getweight() << " pounds" << endl;
     cout << "Destination:    " << setw(5) << left << getdest() << endl;
