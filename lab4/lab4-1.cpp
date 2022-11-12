@@ -60,6 +60,9 @@ public:
 
     friend double kilotopound(double weightInKilo); // friend function prototype
 
+    // == overload operator friend function prototype
+    friend bool operator==(const Cargo &c1, const Cargo &c2);
+
 }; /// end of class Cargo
 
 // friend function definition
@@ -70,6 +73,18 @@ double kilotopound(double weightInKilos)
     return weightInPounds;
 }
 
+bool operator==(const Cargo &c1, const Cargo &c2)
+{
+    if (c1.uldtype == c2.uldtype && c1.abbrev == c2.abbrev)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 int main()
 {
     Cargo c1;      /// create Cargo object on the stack
@@ -77,13 +92,23 @@ int main()
     cout << "unit 1" << endl;
     c1.output(&c1); // calls output function with the cargo object's address on the stack to display data from object c1
 
-    Cargo c3(c1); // create a copy of object c1 and store in object c3
+    Cargo c2(c1); // create a copy of object c1 and store in object c3
     cout << "unit 2" << endl;
-    c3.output(&c3); // calls output function with the cargo object's address on the stack to display copied data from object c3
+    c2.output(&c2); // calls output function with the cargo object's address on the stack to display copied data from object c3
 
-    Cargo c2; /// create default Cargo object on the stack
+    Cargo c3; /// create default Cargo object on the stack
     cout << "unit 3" << endl;
-    c2.output(&c2); // calls output function with the cargo object's address on the stack to display default data from object c2
+    c3.output(&c3); // calls output function with the cargo object's address on the stack to display default data from object c2
+
+    // == overload operator test
+    if (c1 == c2)
+    cout << "\n unit1 is the same as unit2\n" << endl;
+    else
+    cout << " \nunit1 is not the same as unit2\n" << endl;
+    if (c2 == c3)
+    cout << " \nunit2 is the same as unit3\n" << endl;
+    else
+    cout << " \nunit2 is not the same as unit3\n" << endl;
 
     return 0;
 }
