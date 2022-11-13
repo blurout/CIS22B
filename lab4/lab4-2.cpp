@@ -4,18 +4,19 @@ Fatih Sen
 
 Fall 2022
 
-Lab 4
+Lab 3
 
-Problem 0.4.1
+Problem 0.3.2 & 0.3.1
 
 Description of problem:
 
 This object oriented program tracks the Unit Load Delivery (ULD) for airfreight companies using OOP methodology.
-This lab focuses on using overloaded operators to compare two objects.
 */
 #include <iostream>
 #include <string>
 #include <iomanip>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 class Cargo
@@ -56,24 +57,12 @@ public:
     double getweight() const;
     string getdest() const;
 
-    void input(Cargo *);
     void output(Cargo *);
-
-    friend double kilotopound(double weightInKilo); // friend function prototype
 
     // == overload operator friend function prototype
     friend bool operator==(const Cargo &c1, const Cargo &c2);
 
 }; /// end of class Cargo
-
-// friend function definition
-double kilotopound(double weightInKilos)
-{
-    double weightInPounds;
-    weightInPounds = weightInKilos * 2.2;
-    return weightInPounds;
-}
-
 bool operator==(const Cargo &c1, const Cargo &c2)
 {
     if (c1.uldtype == c2.uldtype && c1.abbrev == c2.abbrev)
@@ -86,33 +75,57 @@ bool operator==(const Cargo &c1, const Cargo &c2)
     }
 }
 
+void input();
+
 int main()
 {
-    Cargo c1;      /// create Cargo object on the stack
-    c1.input(&c1); // calls input function to get data from user and store in object c1
-    cout << "unit 1" << endl;
-    c1.output(&c1); // calls output function with the cargo object's address on the stack to display data from object c1
-
-    Cargo c2(c1); // create a copy of object c1 and store in object c3
-    cout << "unit 2" << endl;
-    c2.output(&c2); // calls output function with the cargo object's address on the stack to display copied data from object c3
-
-    Cargo c3; /// create default Cargo object on the stack
-    cout << "unit 3" << endl;
-    c3.output(&c3); // calls output function with the cargo object's address on the stack to display default data from object c2
-
-    // == overload operator test
-    if (c1 == c2)
-    cout << "\n unit1 is the same as unit2\n" << endl;
-    else
-    cout << "\nunit1 is not the same as unit2\n" << endl;
-    if (c2 == c3)
-    cout << "\nunit2 is the same as unit3\n" << endl;
-    else
-    cout << " \nunit2 is not the same as unit3\n" << endl;
-
+    /*
+    calls input function to get data from file and store in object of class cargo
+    uses output to print data from each line of file
+    */
+    input();
     return 0;
 }
+
+// input function definition
+void input() /// need to input six pieces of data
+{
+    ifstream inputFile;
+    inputFile.open("cardata4.txt");
+    if (!inputFile.is_open())
+    {
+        cout << "Error opening file" << endl;
+        exit(1);
+    }
+    Cargo temp;
+
+    string uldtype;
+    string abbrev;
+    string uldid;
+    int aircraft;
+    double weight;
+    string destination;
+
+    string line;
+    while (inputFile.peek() != EOF)
+    {
+        getline(inputFile, line);
+        stringstream currentCargo(line);
+        currentCargo >> uldtype >> abbrev >> uldid >> aircraft >> weight >> destination;
+        temp.setuldtype(uldtype);
+        temp.setabbrev(abbrev);
+        temp.setuldid(uldid);
+        temp.setaircraft(aircraft);
+        temp.setweight(weight);
+        temp.setdest(destination);
+
+        temp.output(&temp);
+    }
+
+    inputFile.close();
+    return;
+}
+
 /// Default constructor, six assignments needed
 Cargo::Cargo()
 {
@@ -173,11 +186,7 @@ void Cargo::setaircraft(int plane)
 }
 void Cargo::setweight(double wt)
 {
-    char scale;
-    cout << "Enter the weight scale (K for kilo, P for pound): ";
-    cin >> scale; // Grabs whatever is after the numerical weight (kilograms or pounds)
-    if (tolower(scale) == 'k') weight = kilotopound(wt); // If the input is in kilograms, it converts it to pounds
-    else weight = wt; // If the input is in pounds, it just stores it
+    weight = wt; // If the input is in pounds, it just stores it
 }
 void Cargo::setdest(string dest)
 {
@@ -213,48 +222,10 @@ void Cargo::output(Cargo *cargoObject) /// need to output six pieces of data
 {
     cout << "Unit load type: " << setw(5) << left << getuldtype() << endl;
     cout << "Abbreviation:   " << setw(5) << left << getabbrev() << endl;
-    cout << "Unit load id:   " << setw(5) << left << getabbrev() + getuldid() << endl;
+    cout << "Unit load id:   " << setw(5) << left << getuldid() << endl;
     cout << "Aircraft:       " << setw(5) << left << getaircraft() << endl;
     cout << "Weight:         " << setw(4) << left << fixed << setprecision(2) << getweight() << " pounds" << endl;
     cout << "Destination:    " << setw(5) << left << getdest() << endl;
     cout << "-----------------------" << endl;
-    return;
-}
-// input function definition
-void Cargo::input(Cargo *cargoObject) /// need to input six pieces of data
-{
-    /// local variables for load from keyboard
-    string type;
-    string abrv;
-    string did;
-    int plane;
-    double wt;
-    string dest;
-
-    cout << "Please input load information\n";
-
-    cout << "Container or Pallet?: ";
-    getline(cin, type);
-    setuldtype(type);
-
-    cout << "Please input abbreviation 3 characters: ";
-    cin >> abrv;
-    setabbrev(abrv);
-
-    cout << "Please input unit load id: " << abrv;
-    cin >> did;
-    setuldid(did);
-
-    cout << "Please enter aircraft type, 3 digits: ";
-    cin >> plane;
-    setaircraft(plane);
-
-    cout << "Please enter weight: ";
-    cin >> wt;
-    setweight(wt);
-
-    cout << "Please enter the cargo destination: ";
-    cin >> dest;
-    setdest(dest);
     return;
 }
