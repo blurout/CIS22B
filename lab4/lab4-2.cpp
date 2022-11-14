@@ -4,19 +4,20 @@ Fatih Sen
 
 Fall 2022
 
-Lab 3
+Lab 4
 
-Problem 0.3.2 & 0.3.1
+Problem 0.4.2 & 0.4.1
 
 Description of problem:
 
 This object oriented program tracks the Unit Load Delivery (ULD) for airfreight companies using OOP methodology.
+Included is file input and terminal output.
+
 */
 #include <iostream>
 #include <string>
 #include <iomanip>
 #include <fstream>
-#include <sstream>
 
 using namespace std;
 class Cargo
@@ -63,17 +64,6 @@ public:
     friend bool operator==(const Cargo &c1, const Cargo &c2);
 
 }; /// end of class Cargo
-bool operator==(const Cargo &c1, const Cargo &c2)
-{
-    if (c1.uldtype == c2.uldtype && c1.abbrev == c2.abbrev)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
 
 void input();
 
@@ -90,15 +80,6 @@ int main()
 // input function definition
 void input() /// need to input six pieces of data
 {
-    ifstream inputFile;
-    inputFile.open("cardata4.txt");
-    if (!inputFile.is_open())
-    {
-        cout << "Error opening file" << endl;
-        exit(1);
-    }
-    Cargo temp;
-
     string uldtype;
     string abbrev;
     string uldid;
@@ -106,24 +87,28 @@ void input() /// need to input six pieces of data
     double weight;
     string destination;
 
-    string line;
+    ifstream inputFile;
+    inputFile.open("cardata4.txt");
+    if (!inputFile.is_open())
+    {
+        std::cerr << "Error opening file" << endl;
+        return;
+    }
+
     while (inputFile.peek() != EOF)
     {
-        getline(inputFile, line);
-        stringstream currentCargo(line);
-        currentCargo >> uldtype >> abbrev >> uldid >> aircraft >> weight >> destination;
-        temp.setuldtype(uldtype);
-        temp.setabbrev(abbrev);
-        temp.setuldid(uldid);
-        temp.setaircraft(aircraft);
-        temp.setweight(weight);
-        temp.setdest(destination);
-
+        inputFile >> uldtype; 
+        inputFile >> abbrev; 
+        inputFile >> uldid; 
+        inputFile >> aircraft; 
+        inputFile >> weight;
+        inputFile  >> destination;
+        inputFile.get();
+        Cargo temp(uldtype, abbrev, uldid, aircraft, weight, destination);
         temp.output(&temp);
     }
 
     inputFile.close();
-    return;
 }
 
 /// Default constructor, six assignments needed
